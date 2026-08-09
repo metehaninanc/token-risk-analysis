@@ -1,0 +1,10 @@
+# Build output
+dist/
+
+# Archived raw collector responses (reproducibility data, not source)
+data/
+
+# Secrets & deps (also covered by the repo-root .gitignore)
+.env
+node_modules/
+*.log
