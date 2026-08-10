@@ -43,6 +43,8 @@ export interface AppConfig {
   /** SafeAnalyzer (dexanalyzer.io) requires a mandatory apiKey. */
   safeAnalyzer: HttpSourceConfig;
   dexScreener: UrlSourceConfig;
+  /** The author's LP-lock HTTP service (packages/lp-lock-api). */
+  lpLock: UrlSourceConfig;
   /** Used ONLY to fetch verified source for the code-level checker. */
   etherscan: HttpSourceConfig;
   openai: OpenAiConfig;
@@ -67,13 +69,17 @@ export function loadConfig(): AppConfig {
     },
     safeAnalyzer: {
       apiKey: env('SAFEANALYZER_API_KEY'),
-      baseUrl: envOr('SAFEANALYZER_BASE_URL', 'https://api1.dexanalyzer.io'),
+      baseUrl: envOr('SAFEANALYZER_API_URL', 'https://api1.dexanalyzer.io'),
     },
     dexScreener: {
       baseUrl: envOr('DEXSCREENER_BASE_URL', 'https://api.dexscreener.com/latest'),
     },
+    lpLock: {
+      baseUrl: envOr('LP_LOCK_API_URL', 'http://localhost:3001'),
+    },
     etherscan: {
-      apiKey: env('ETHERSCAN_API_KEY'),
+      // Prefer ETHERSCAN_KEY; fall back to the legacy ETHERSCAN_API_KEY name.
+      apiKey: env('ETHERSCAN_KEY') ?? env('ETHERSCAN_API_KEY'),
       baseUrl: envOr('ETHERSCAN_BASE_URL', 'https://api.etherscan.io/v2/api'),
     },
     openai: {
