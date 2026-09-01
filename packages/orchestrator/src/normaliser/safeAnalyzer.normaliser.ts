@@ -1,4 +1,4 @@
-import type { Signal, SignalStatus } from '../types/index.js';
+import type { Severity, Signal, SignalStatus } from '../types/index.js';
 import { SOURCES } from '../types/index.js';
 import type { SignalKey, SignalValue } from './keys.js';
 import { asString, buildSignal, isRecord, toNumber } from './keys.js';
@@ -53,7 +53,9 @@ function mapReportxFlag(flag: unknown): { key: SignalKey; evidence: string } | u
  *   `lockValue` (HTML) → `lp_locked`
  *   `holders` ([count, ...]) → `holder_count`
  *   `reportx[]` flags → blacklist / mint / proxy / mutable_taxes(set-fee) /
- *     pausable(trading-disable)
+ *     pausable(trading-disable), AND → `contract_scam_flags`: any point>=53 = scam
+ *     (high), 7 = medium — UNLESS the point sum >500 ("unique"/over-fire → low);
+ *     value = point sum.
  */
 export function normaliseSafeAnalyzer(raw: unknown): Signal[] {
   if (!isRecord(raw)) return [];
@@ -102,10 +104,35 @@ export function normaliseSafeAnalyzer(raw: unknown): Signal[] {
   }
 
   if (Array.isArray(raw.reportx)) {
+    let pointSum = 0;
+    let maxPoint = 0;
     for (const flag of raw.reportx) {
+      if (isRecord(flag)) {
+        const p = toNumber(flag.point);
+        if (p !== undefined) {
+          pointSum += p;
+          if (p > maxPoint) maxPoint = p;
+        }
+      }
       const mapped = mapReportxFlag(flag);
       if (mapped) signals.push(buildSignal(SOURCE, mapped.key, 'present', true, mapped.evidence));
     }
+    // Rule (per the API author): a SINGLE point >= 53 is already scam → high;
+    // 7 → medium; any flag → low. BUT if the point SUM > 500, the Rug-Checker
+    // regex has over-fired on an unusual ("unique") contract, so it is NOT
+    // treated as scam (down-weighted to low). `value` = sum for inspection.
+    const unique = pointSum > 500;
+    const severity: Severity = unique
+      ? 'low'
+      : maxPoint >= 53
+        ? 'high'
+        : maxPoint >= 7
+          ? 'medium'
+          : maxPoint > 0
+            ? 'low'
+            : 'none';
+    const evidence = `reportx: max point ${maxPoint}, sum ${pointSum}${unique ? ' — unique/over-fire (>500)' : ''}`;
+    signals.push(buildSignal(SOURCE, 'contract_scam_flags', 'present', pointSum, evidence, severity));
   }
 
   return signals;

@@ -39,6 +39,31 @@ function appError(raw: unknown): string | undefined {
 }
 
 /**
+ * Redact the `item` from reportx entries whose `data` is "ABC": those items
+ * describe the hidden/encoded scam MECHANISM itself (the actual exploit code),
+ * so they must not be persisted to disk or shown to a user. `data` and `point`
+ * (the scam-severity the normaliser uses) are kept intact. Applied before
+ * archiving; other flag types keep their `item` as evidence.
+ */
+function redactAbcItems(raw: unknown): unknown {
+  if (typeof raw !== 'object' || raw === null) return raw;
+  const record = raw as Record<string, unknown>;
+  if (!Array.isArray(record.reportx)) return raw;
+  const reportx = record.reportx.map((flag) => {
+    if (typeof flag === 'object' && flag !== null) {
+      const f = flag as Record<string, unknown>;
+      if (typeof f.data === 'string' && f.data.trim().toUpperCase() === 'ABC') {
+        const copy = { ...f };
+        delete copy.item;
+        return copy;
+      }
+    }
+    return flag;
+  });
+  return { ...record, reportx };
+}
+
+/**
  * (3) SafeAnalyzer (dexanalyzer.io) — cross-validation source for contract-level
  * flags that ALSO provides liquidity / lock / tax / honeypot / holder data. It
  * degrades gracefully to a failed source (`ok: false`) if the key is missing or
@@ -116,7 +141,8 @@ export class SafeAnalyzerCollector implements Collector {
       const failure = appError(raw);
       if (failure) return failResult(this.name, address, failure);
 
-      const result = okResult(this.name, address, raw);
+      // Redact the exploit-detail `item` of reportx "ABC" flags before storing.
+      const result = okResult(this.name, address, redactAbcItems(raw));
       await archiveRawResult(result, this.config.archiveDir);
       return result;
     } catch (err) {

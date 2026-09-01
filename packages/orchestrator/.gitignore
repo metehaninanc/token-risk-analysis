@@ -1,8 +1,14 @@
 # Build output
 dist/
 
-# Archived raw collector responses (reproducibility data, not source)
-data/
+# Archived raw API data + evaluation outputs are reproducible → ignored,
+# EXCEPT the labelled dataset, which is the dissertation's primary data and is
+# version-controlled. (git can't re-include a file whose parent dir is ignored,
+# so ignore data/ CONTENTS, re-include data/eval/, then keep only labels.json.)
+data/*
+!data/eval/
+data/eval/*
+!data/eval/labels.json
 
 # Secrets & deps (also covered by the repo-root .gitignore)
 .env

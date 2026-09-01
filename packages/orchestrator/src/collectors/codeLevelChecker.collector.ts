@@ -1,8 +1,11 @@
+import { readFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import type { Collector, RawCollectorResult } from '../types/index.js';
 import { SOURCES } from '../types/index.js';
 import { type AppConfig, loadConfig } from '../config/index.js';
 import { archiveRawResult } from '../utils/archive.js';
 import { fetchVerifiedSource } from '../utils/etherscanSource.js';
+import { GoPlusCollector } from './goplus.collector.js';
 import { failResult, okResult } from './result.js';
 
 /** Default LLM request timeout (LLM calls are slower than the REST collectors). */
@@ -51,26 +54,33 @@ const SYSTEM_PROMPT = [
   '- mint_after_deploy: can the owner or any privileged role mint new tokens after deployment?',
   '- restrict_transfers: can the owner pause, block, blacklist, or otherwise restrict transfers/selling?',
   '- mutable_taxes: can buy/sell taxes or fees be changed after launch?',
-  '- hidden_owner_privileges: are there hidden owner-only privileges or backdoors (owner-only functions that move user funds, an owner-controlled upgradeable proxy, etc.)?',
+  '- hidden_owner_privileges: are there GENUINE backdoors — code letting a privileged party (owner OR a hardcoded address) MOVE/SEIZE USER funds, arbitrarily rewrite balances, secretly mint, or divert transfers to itself? Inspect _transfer and every function it calls for hidden owner-favouring logic (special state variables / if-blocks). Ordinary maintenance functions that only recover the CONTRACT\'S OWN tokens or ETH (manualSwap, manualSend, rescueERC20, withdrawStuckTokens, clearStuckBalance, etc.) are NOT backdoors — mark them absent unless they move USER holdings.',
   '- ownership_status: can owner/admin control be retained or reclaimed? "present" = ownership is active or can be reclaimed after renouncing; "absent" = ownership is genuinely renounced with no reclaim path in the code; "undetermined" = the code does not make this clear (e.g. the current owner is runtime state not visible in source).',
   '',
   'Rules:',
   '- status must be "present", "absent", or "undetermined".',
   '- Use "undetermined" whenever the code does not clearly show the answer. Do NOT guess or infer beyond the code.',
+  '- Focus on ANOMALIES: real scams hide owner-favouring logic inside _transfer (or helpers) via special variables / if-blocks, not in obviously-named functions. Do NOT flag a risk merely because an admin function EXISTS — flag it when the code can actually harm holders.',
   '- evidence must be a function/modifier name or a short factual reason taken from the code; use "" when there is none.',
   '- Do NOT output any risk score, scam/not-scam verdict, overall judgement, recommendation, or advice. Report only these five factual properties.',
   '- Output a single JSON object exactly of the form: {"checks":[{"check":"...","status":"...","evidence":"..."}]} containing all five checks.',
 ].join('\n');
 
-/** User prompt carrying the (possibly truncated) source code. */
-function buildUserPrompt(sourceCode: string): string {
-  return [
+/** User prompt carrying the (possibly truncated) source code + renounce context. */
+function buildUserPrompt(sourceCode: string, renounced: boolean | undefined): string {
+  const lines = [
     'Analyze the verified Solidity source below and return the five checks as JSON.',
     'Answer each check independently and only from this code.',
-    '',
-    'SOURCE CODE:',
-    sourceCode,
-  ].join('\n');
+  ];
+  if (renounced === true) {
+    lines.push(
+      'CONTEXT: ownership is CURRENTLY RENOUNCED on-chain (confirmed by an independent source). Owner-only functions are therefore INERT and cannot be called — do NOT flag owner-only capabilities as active risks; instead focus on genuine backdoors that do NOT need the owner, and on whether ownership could be RECLAIMED after renouncing.',
+    );
+  } else if (renounced === false) {
+    lines.push('CONTEXT: ownership is NOT renounced (an active owner exists), so owner-only functions can be invoked.');
+  }
+  lines.push('', 'SOURCE CODE:', sourceCode);
+  return lines.join('\n');
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -153,6 +163,62 @@ async function readError(response: Response): Promise<string> {
   return `${response.status} ${response.statusText}`.trim();
 }
 
+/* ── renounce lookup (from SafeAnalyzer / GoPlus, NOT an on-chain owner() call) ── */
+
+const RENOUNCED_OWNERS = new Set([
+  '',
+  '0x0000000000000000000000000000000000000000',
+  '0x000000000000000000000000000000000000dead',
+]);
+
+/** Renounce reading from a GoPlus response (`result[addr].owner_address`). */
+function goplusRenounce(raw: unknown): boolean | undefined {
+  if (!isRecord(raw) || !isRecord(raw.result)) return undefined;
+  const first: unknown = Object.values(raw.result)[0];
+  if (!isRecord(first) || typeof first.owner_address !== 'string') return undefined;
+  return RENOUNCED_OWNERS.has(first.owner_address.toLowerCase());
+}
+
+/** Renounce reading from a SafeAnalyzer response (`owner === "***RENOUNCED***"`). */
+function safeAnalyzerRenounce(raw: unknown): boolean | undefined {
+  if (!isRecord(raw) || typeof raw.owner !== 'string' || raw.owner.trim() === '') return undefined;
+  return /renounced/i.test(raw.owner);
+}
+
+/** Read the `raw` field of an archived RawCollectorResult, if the file exists. */
+async function readArchivedRaw(path: string): Promise<unknown> {
+  try {
+    const parsed: unknown = JSON.parse(await readFile(path, 'utf8'));
+    return isRecord(parsed) ? parsed.raw : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Determine whether ownership is renounced, from an INDEPENDENT runtime source —
+ * SafeAnalyzer or GoPlus (either is enough). On-chain `owner()` is intentionally
+ * avoided: contracts use non-standard owner accessors, so it is unreliable.
+ * Prefers archived data; falls back to a fresh (keyless) GoPlus call.
+ */
+async function resolveRenounce(address: string, config: AppConfig): Promise<boolean | undefined> {
+  const dir = resolve(config.archiveDir, address.toLowerCase());
+
+  const gpArchived = goplusRenounce(await readArchivedRaw(join(dir, 'goplus.json')));
+  if (gpArchived !== undefined) return gpArchived;
+
+  const saArchived = safeAnalyzerRenounce(await readArchivedRaw(join(dir, 'safeanalyzer.json')));
+  if (saArchived !== undefined) return saArchived;
+
+  try {
+    const fresh = await new GoPlusCollector(config).collect(address);
+    if (fresh.ok) return goplusRenounce(fresh.raw);
+  } catch {
+    /* renounce simply stays unknown */
+  }
+  return undefined;
+}
+
 /**
  * (6) Code-Level Checker — LLM-based.
  *
@@ -209,8 +275,11 @@ export class CodeLevelCheckerCollector implements Collector {
       const { apiKey } = this.config.openai;
       if (!apiKey) return failResult(this.name, address, 'OPENAI_API_KEY not configured');
 
+      // Renounce first (from SafeAnalyzer / GoPlus), THEN the LLM — so the model
+      // knows owner-only functions may be inert and can focus on real anomalies.
+      const renounced = await resolveRenounce(address, this.config);
       const { text, truncated } = truncate(source.sourceCode, this.maxChars);
-      const { checks, model } = await this.runChecks(text, apiKey);
+      const { checks, model } = await this.runChecks(text, apiKey, renounced);
 
       const raw: CodeCheckerRaw = truncated
         ? { verified: true, truncated: true, model, checks }
@@ -232,6 +301,7 @@ export class CodeLevelCheckerCollector implements Collector {
   private async runChecks(
     sourceCode: string,
     apiKey: string,
+    renounced: boolean | undefined,
   ): Promise<{ checks: CodeObservation[]; model: string }> {
     const { baseUrl, model } = this.config.openai;
     const controller = new AbortController();
@@ -250,7 +320,7 @@ export class CodeLevelCheckerCollector implements Collector {
           response_format: { type: 'json_object' },
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: buildUserPrompt(sourceCode) },
+            { role: 'user', content: buildUserPrompt(sourceCode, renounced) },
           ],
         }),
         signal: controller.signal,

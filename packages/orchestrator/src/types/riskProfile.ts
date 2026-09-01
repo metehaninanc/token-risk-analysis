@@ -22,4 +22,11 @@ export interface RiskProfile {
   sourcesQueried: string[];
   /** Sources that failed, mapped to a short failure reason. */
   sourcesFailed: Record<string, string>;
+  /**
+   * Keys where sources disagreed (the merged signal's `conflict === true`).
+   * A first-class output — the conflict record is core to the methodology
+   * (§3.4 / RQ3), not a secondary add-on — so the evaluation and conversation
+   * layers can find contested signals directly.
+   */
+  conflicts: string[];
 }

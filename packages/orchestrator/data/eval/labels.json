@@ -1,0 +1,505 @@
+{
+  "_readme": "Researcher's manually-verified evaluation set (methodology 3.6): Ethereum ERC-20 contracts, hand-checked. labelSource records the independent labelling method (NOT a signal source). Only 'tokens' is read; _readme is a note.",
+  "tokens": [
+    {
+      "address": "0x4c33d201506adc75793afb9a3e9a33e3718bf276",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x5ade5bc6d12bee7b8645fee69643a4eed035b495",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xf69ebe4353d00912763b9e7be3aee4f00509c2cc",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x85acc97796f91021c578177bfd2407a481d148bf",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x390ede71c93d5b13e8762931923ba688a0b88ff9",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xfeba8e170ca6818a9a8e1fca7fc95ffc45bb9c30",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xe86fef40ecc2b3d717a3e627864ea3bb0fe20da4",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xe310661715a2d9b8d26844509e280e47af42ecb9",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x3ec52ab7d533e2bc23be629b8cc2a652a7407e5b",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x97c9b71064F587DB90f32c855FbE029bF8A0C05D",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x48e62d13a6b5dce5639c6533aa0491324e62b8e3",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x7dfd87daa2b994c91bd2d48e3eec11cfdddbc396",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x372d758cfab2e8a6ac377f4626548879160b7743",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xa7FE314d641709b287c2b5e4a47dCBfB37122E47",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x485e748b4d1b09c1106be343fb8050ae62311d43",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xAF895F7718dBc701418FcFeFaBadA961848a79b2",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xa4fb35cffeb9d9c68708ba27c91dc552f6939d34",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xeb7373b6236df5914b3319551b3a96fc0bea4e0b",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x35935913ebbfc4b4c4eb4e8f63d34921325703b1",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x54e128ef1f2bf3881d4bb0690a153992c0c01ed8",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x54d10cbbcd978377dce8e52fa287cdf85f2c853d",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x51517ef868a4c267c7b4d274d432ac6356dadc94",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xf3c188c493f05dc88d0ca5b7363d638400127b7f",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x5c813a205a6f9587d8c1d341a536c7a0961fe113",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xe69dfe14b689588476b73d8cd34cceafc51ca76d",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x52e74f58f0056cb2ccf26b9616dcd0aabeb875d7",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x04439bec59a8dc2b2464f7989e9cbd9bd9a3e5a3",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x39484a066af5fedfdef7ebf828e95cfb035fd1bc",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x285659613f2E02a4f00481e5F1F0703A3a017259",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xa960191235da6ed0c7f637e55f6193f3cb4c540c",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xa7be9fd7434c15b5ab86a5739b172b5c2d9ba366",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xc53aa8d07021a9e64c0122e8b7d6f0d890f567bf",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xaa786104a50a479533454a0d9ae07a658b37b72e",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x96dcc4d64f7c204db741637e58c6c73d522b5cf8",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x5c54551203d764c75bb6f1346a7f102214f7af93",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x13db711af3e0ccfe24c974d5f9cb7f84b31e12df",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xa5801880870e43c030d753457cf446708b839422",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x1d2d76af2d3a793d79a5c832d5b65149f5fe3d51",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x5631a4ce7fd97732d0b997fa989fd745181f79f4",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xb3a331b515c5bd9935c8c28b6376b72bc14c914b",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xc4192ca7cacffc57f78a56c408feeefe6b1da067",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xffcda56609ba9e45f53cf5eb79bd77dbb7e5748b",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x4298211f8b29064292ae7dfa4b1f1de6baa30f86",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xcc637390905a913f05ac33859fd34587c2f22575",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xb1da1dab00364a210a67eb57e52ae8259fe7a370",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xf403e8eacaf7121efe713b16fee42e5963babfd7",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x6d23e4b6d69a126a7ddbb99af288fc5d90836ce8",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xf6ea94d588bf5ccb1f2574060510ab26d8fc8f7a",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0xb1e6dc452bba101c50338d35c097e88f2dd12d33",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x87adfafc4d4b64f4d3844854c764bc82c2e0db2e",
+      "label": "scam",
+      "labelSource": "manual-verification"
+    },
+    {
+      "address": "0x2d1643a5d14fb221521767f2405efbbe4d4603fd",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xAC10c3cF62a870ab82F82c61F2EAA28D80246BD4",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xae1C6e1F3dA993C493ad8c3081Dc8Da8F6AC8160",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xc8eb7b92ad3d794a39a9bc83f693e45e0741b366",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x397f1551aa7b22e382fed9f4c8e60f8f4968cf0f",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x23a2df027e19fba5625d2b0b1139bb4e62ecdfa5",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x4c5fc2efd7f9fba2c6a9227abd9d1c3eefd6bdd7",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x47a9d8122b00532325d64ca348e731d3c51a223c",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x9813F688d022192Ff7fe6854d9Fa0a9529BC5FDb",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xa10c39aba4a9a392683414ff9d8809cd5fc03f24",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x7427b61606f94fe209517330a0d9ada90d1b0eb0",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xfdcd8be9dd37cf982472d30eeee4ec50a0296953",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xb6b350842b41f709509445ebbfc0fe0df66b1b14",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x2e5ef97c96d6a44ccb8db9c30f2f5dcec04bb6f9",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xff2f0388e84416dB67219c8e88AAdb28dE30a93B",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x66769c7deb8b5638039c427c014cbe06b6434811",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xf2da4643B573042ce685BAa36a855A8812e5CF31",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xb063f7514a1b89d8a3be79e2ea519bb68b536904",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x42778037d69350508cdd34d9fa17053970591101",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x3add95b59415a95db0a546d8e7e49ca06bc77946",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x6a3f3776e8e3c645cf0dc01622c864746f7cd5fc",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xa2d6e595df8b7130458ec30963c0933d105085c9",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x893643f9e232e4e857f278d61641c955589a7a37",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x0f77ce02d4fa4ce7c8cc62ad9dc8c10c58ec12de",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x759f8b83db57033aed95545694f6ada480b6e987",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x973f484737bdfdc481d374e74e5cff7c4c84406a",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x93dc0b1cc5193b33856c3bf0d585238acf1989dc",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x5d0e105bcddf04a6964f722cdf38efc924350ba7",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x315d3626365f1ddd4ccc7e0535be91bb26dc3c18",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x68ff3827b7db95e277a8d5a75ae95c8efbd8e134",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x0fb006edd8d6c128b83d2461dbfe74b318952886",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xf714223bfd2bad25bb4014d57606ee8e9bcc4df4",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x29a74650310aebc93749d7196e7e6fc01d379e9e",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xc9ac1b160663b9a286ca64d175e674b53f835b56",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xd9d8ab3e28232d12573fb091dde3a0b68b15a7b8",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xc7e4254a72169fdf7a2e080462724f2f642daf7e",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x5e90a85837c4588a1a6107b8c620342d3a57fd53",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xa9c646e48be74a15c98646cf197450df3aab5dd5",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x463736b6fbdc5043bc13aeda5e79fc92dc6aa18d",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x45547ab0100f5e8b158258b6d94d7586de69fc21",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x69420654e8274107a0d455a6e9b08b497f435444",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xcec8314cf4d448fbd3525696af045f13ccea7444",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x3009b6833f8925b7985c2408c49160dd1ab317ca",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xd7a7394294f4687966c60a1f68920f29688bf546",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x9fbb27bf81efded7b134d40aca9d49d6134368cb",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xfabd8d91c9c0cd3f852466bada03673918de5284",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xd83304a3d88323175eb041dd83fd85a5581759ab",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x8de39b057cc6522230ab19c0205080a8663331ef",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0xf9877901a3d8c8d26078703004e748e66a4009b5",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    },
+    {
+      "address": "0x77f6e975aa520601236f61c81ca8a88e2c3cc1a9",
+      "label": "legitimate",
+      "labelSource": "manual-inspection"
+    }
+  ]
+}

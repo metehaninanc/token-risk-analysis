@@ -1,4 +1,4 @@
-import type { Signal, SignalGroup, SignalStatus, SourceName } from '../types/index.js';
+import type { Severity, Signal, SignalGroup, SignalStatus, SourceName } from '../types/index.js';
 import { severityFor } from './severity.js';
 
 /**
@@ -21,6 +21,7 @@ export const CONTRACT_KEYS = [
   'source_verified',
   'mutable_taxes',
   'hidden_owner_privileges',
+  'contract_scam_flags',
 ] as const;
 
 export const HOLDER_KEYS = [
@@ -58,8 +59,10 @@ function buildKeyGroup(): Record<SignalKey, SignalGroup> {
 
 /**
  * Build a single-source `Signal` for `key`, deriving `group` from the catalogue
- * and `severity` from the central rules. `conflict` is intentionally left unset
- * — only the orchestrator sets it once it has merged across sources.
+ * and `severity` from the central rules — unless `severityOverride` is given, for
+ * a few source-specific signals whose severity needs data the generic per-key
+ * rule can't see (e.g. SafeAnalyzer's reportx max-point + sum). `conflict` is
+ * left unset — only the orchestrator sets it once it has merged across sources.
  */
 export function buildSignal(
   source: SourceName,
@@ -67,13 +70,14 @@ export function buildSignal(
   status: SignalStatus,
   value: SignalValue,
   evidence?: string,
+  severityOverride?: Severity,
 ): Signal {
   const signal: Signal = {
     key,
     group: KEY_GROUP[key],
     status,
     value,
-    severity: severityFor(key, status, value),
+    severity: severityOverride ?? severityFor(key, status, value),
     sources: [source],
   };
   if (evidence !== undefined && evidence.trim() !== '') signal.evidence = evidence;

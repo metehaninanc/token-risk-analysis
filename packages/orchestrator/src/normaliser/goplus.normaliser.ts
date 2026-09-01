@@ -32,6 +32,37 @@ function holderPercent(entry: unknown): number | undefined {
   return isRecord(entry) ? toNumber(entry.percent) : undefined;
 }
 
+/** Burn / null addresses that hold "dead" supply. */
+const BURN_ADDRESSES = new Set([
+  '0x0000000000000000000000000000000000000000',
+  '0x000000000000000000000000000000000000dead',
+]);
+
+/** Tags marking a holder as a DEX pair, locker, or burn — not a real user. */
+const INFRA_TAG_RE = /uniswap|pancake|sushi|balancer|curve|\blp\b|liquidit|\bpair\b|\bpool\b|lock|burn|null|dead/i;
+
+/** Tags marking an LP holder specifically as a lock/burn (NOT a plain dex pair). */
+const LOCK_TAG_RE = /lock|burn|null|dead/i;
+
+function isTruthyFlag(value: unknown): boolean {
+  return value === '1' || value === 1 || value === true;
+}
+
+/**
+ * True for holders that are NOT real users: the LP pair, lockers, or burn
+ * addresses. Counting these as "top holders" wildly inflates concentration
+ * (e.g. the Uniswap pair holding 62% of supply looks like a whale but is just
+ * the liquidity pool). Excluded from top1/top10 concentration.
+ */
+function isInfrastructureHolder(entry: Record<string, unknown>): boolean {
+  if (isTruthyFlag(entry.is_locked)) return true;
+  const address = typeof entry.address === 'string' ? entry.address.toLowerCase() : '';
+  if (BURN_ADDRESSES.has(address)) return true;
+  const tag = typeof entry.tag === 'string' ? entry.tag : '';
+  if (isTruthyFlag(entry.is_contract) && tag !== '' && INFRA_TAG_RE.test(tag)) return true;
+  return false;
+}
+
 /** Boolean "1"/"0" contract flags mapped onto canonical keys. */
 const FLAG_KEYS: ReadonlyArray<readonly [string, SignalKey]> = [
   ['is_honeypot', 'honeypot'],
@@ -92,13 +123,17 @@ export function normaliseGoPlus(raw: unknown): Signal[] {
 
   const holders = d.holders;
   if (Array.isArray(holders) && holders.length > 0) {
-    const top1 = holderPercent(holders[0]);
+    // Concentration counts REAL users only — drop the LP pair / lockers / burn.
+    const real = holders.filter(
+      (h): h is Record<string, unknown> => isRecord(h) && !isInfrastructureHolder(h),
+    );
+    const top1 = real.length > 0 ? holderPercent(real[0]) : undefined;
     if (top1 !== undefined) {
       signals.push(buildSignal(SOURCE, 'top1_holder_share', 'present', round2(top1 * 100)));
     }
     let sum = 0;
     let any = false;
-    for (const entry of holders.slice(0, 10)) {
+    for (const entry of real.slice(0, 10)) {
       const p = holderPercent(entry);
       if (p !== undefined) {
         sum += p;
@@ -111,6 +146,32 @@ export function normaliseGoPlus(raw: unknown): Signal[] {
   const creator = toNumber(d.creator_percent);
   if (creator !== undefined) {
     signals.push(buildSignal(SOURCE, 'deployer_share', 'present', round2(creator * 100)));
+  }
+
+  // LP lock/burn from GoPlus lp_holders — a third source for lp_locked, so the
+  // system still has LP coverage when lp-lock-api is down or incomplete.
+  const lpHolders = d.lp_holders;
+  if (Array.isArray(lpHolders) && lpHolders.length > 0) {
+    let lockedFraction = 0;
+    for (const h of lpHolders) {
+      if (!isRecord(h)) continue;
+      const pct = toNumber(h.percent) ?? 0;
+      const addr = typeof h.address === 'string' ? h.address.toLowerCase() : '';
+      const tag = typeof h.tag === 'string' ? h.tag : '';
+      if (isTruthyFlag(h.is_locked) || BURN_ADDRESSES.has(addr) || LOCK_TAG_RE.test(tag)) {
+        lockedFraction += pct;
+      }
+    }
+    const lockedPct = round2(lockedFraction * 100);
+    const status = lockedFraction >= 0.5 ? 'present' : 'absent';
+    signals.push(
+      buildSignal(SOURCE, 'lp_locked', status, status === 'present', `${lockedPct}% of LP locked/burned (GoPlus lp_holders)`),
+    );
+  }
+
+  const lpHolderCount = toNumber(d.lp_holder_count);
+  if (lpHolderCount !== undefined) {
+    signals.push(buildSignal(SOURCE, 'lp_holder_count', 'present', lpHolderCount));
   }
 
   return signals;
